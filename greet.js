@@ -17,9 +17,43 @@ function isOneChecked(){
   return false;
 }
 
+function chosenLanguage(radioButtonList){
+  for(var i = 0; i < radioButtonList.length; i++){
+    console.log("current button is: " + i + " value: " + radioButtonList[i].value);
+    if(radioButtonList[i].checked){
+      console.log("button " + i + " is checked")
+      //console.log(outputLanguage);
+      return radioButtonList[i].value;
+    }
+  };
+  return "";
+};
+
+function assignLanguage(outputLanguage, name){
+  switch (outputLanguage) {
+    case 'fr':
+      return 'Bonjour, ' + name.value;
+      break;
+    case 'es':
+      return 'Hola, ' + name.value;
+      break;
+    case 'en':
+      return 'Hello, ' + name.value;
+      break;
+  }
+};
+
+function incrementCounter(namesGreetedList){
+  if(namesGreetedList[inputName.value] === undefined){
+    namesGreetedList[inputName.value] = 1;
+    greetingCounter.value++;
+    localStorage.setItem('greetCounter', greetingCounter.value);
+  }
+};
+
 /* create object to store names that have already been greeted */
 var namesGreeted = {};
-
+console.log(greetingCounter);
 greetingCounter.value = localStorage.getItem('greetCounter');
 console.log(greetingCounter.value);
 greetingCounter.innerHTML = localStorage.getItem('greetCounter');
@@ -31,27 +65,30 @@ button.addEventListener("click", function(event){
   if(inputName.value !== "" && isChecked === true){
     console.log("one is checked");
     /* if name has been greeted before, do not increment counter */
-    if(namesGreeted[inputName.value] === undefined){
-      namesGreeted[inputName.value] = 1;
-      greetingCounter.value++;
-      localStorage.setItem('greetCounter', greetingCounter.value);
-    };
-    for(var i = 0; i < radioButtons.length; i++){
-      if(radioButtons[i].checked){
-        outputLanguage = radioButtons[i].value;
-      };
+    incrementCounter(namesGreeted);
+    // if(namesGreeted[inputName.value] === undefined){
+    //   namesGreeted[inputName.value] = 1;
+    //   greetingCounter.value++;
+    //   localStorage.setItem('greetCounter', greetingCounter.value);
+    // };
+    // for(var i = 0; i < radioButtons.length; i++){
+    //   if(radioButtons[i].checked){
+    //     outputLanguage = radioButtons[i].value;
+    //   };
     /* translate to appropriate language and display the greeting */
-    switch (outputLanguage) {
-      case 'fr':
-        outputName.innerHTML = 'Bonjour, ' + inputName.value;
-        break;
-      case 'es':
-        outputName.innerHTML = 'Hola, ' + inputName.value;
-        break;
-      case 'en':
-        outputName.innerHTML = 'Hello, ' + inputName.value;
-    };
-  };
+    outputLanguage = chosenLanguage(radioButtons);
+    outputName.innerHTML = assignLanguage(outputLanguage, inputName);
+    // switch (outputLanguage) {
+    //   case 'fr':
+    //     outputName.innerHTML = 'Bonjour, ' + inputName.value;
+    //     break;
+    //   case 'es':
+    //     outputName.innerHTML = 'Hola, ' + inputName.value;
+    //     break;
+    //   case 'en':
+    //     outputName.innerHTML = 'Hello, ' + inputName.value;
+    // };
+  // };
   /* loop through radio buttons to see which button is checked */
   };
   /* display current number of legitimate greetings */
