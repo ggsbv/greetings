@@ -1,113 +1,89 @@
+"use strict";
+
 /* Capture necessary variables */
-var inputName = document.querySelector("#iName");
-var outputName = document.querySelector("#oName");
-var button = document.querySelector("#button");
-var mouseover = document.querySelector("#mouseover");
-var greetingCounter = document.querySelector("#greetingCounter");
-var radioButtons = document.getElementsByName("languageSelect");
+const inputName = document.querySelector("#iName");
+const outputName = document.querySelector("#oName");
+const button = document.querySelector("#button");
+const mouseover = document.querySelector("#mouseover");
+const greetingCounter = document.querySelector("#greetingCounter");
+const radioButtons = document.getElementsByName("languageSelect");
 const greetReset = document.querySelector("#greetReset");
 
-function isOneChecked(){
-  for (var i = 0; i < radioButtons.length; i++){
-    var currentButton = radioButtons[i];
-    if (currentButton.checked) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function chosenLanguage(radioButtonList){
-  for(var i = 0; i < radioButtonList.length; i++){
-    console.log("current button is: " + i + " value: " + radioButtonList[i].value);
-    if(radioButtonList[i].checked){
-      console.log("button " + i + " is checked")
-      //console.log(outputLanguage);
-      return radioButtonList[i].value;
-    }
+//FUNCTION    : chosenLanguage
+//PARAMETERS  : [1] radioButtonElems => list of radio button elements
+//                # Type : Array
+//RETURN      : Type  => String           *If a radio button was checked
+//                    => Boolean (false)  *If a radio button was not checked
+//DESCRIPTION : Takes a list of radio button elements and returns its value if one
+//              has been checked, and false if none have been checked
+function chosenLanguage(radioButtonElems){
+  for (let i = 0; i < radioButtonElems.length; i++){
+    let currentButtonElem = radioButtonElems[i];
+    if(currentButtonElem.checked){
+      return currentButtonElem.value;
+    };
   };
-  return "";
+  return false;
 };
 
-function assignLanguage(outputLanguage, name){
-  switch (outputLanguage) {
-    case 'fr':
-      return 'Bonjour, ' + name.value;
-      break;
-    case 'es':
-      return 'Hola, ' + name.value;
-      break;
-    case 'en':
-      return 'Hello, ' + name.value;
-      break;
-  }
+//FUNCTION    : incrementCounter
+//PARAMETERS  : [1] namesGreetedList  =>  list of names mapped to the number of times
+//                                        each name has been greeted
+//                # Type : Object list (map)
+//              [2] name              =>  the user's name that was input
+//                # Type : String
+//RETURN      : N/A
+//DESCRIPTION : Takes an object with names that have been greeted. If the name
+//              does not exist in the object, the name is created and the counter
+//              is incremented and stored in the localStorage
+function incrementCounter(namesGreetedList, name){
+  if(!namesGreetedList[name]){
+    namesGreetedList[name] = 1;
+    let counter = Number(localStorage.getItem('greetCounter'));
+    localStorage.setItem('greetCounter', counter++);
+  };
 };
 
-function incrementCounter(namesGreetedList){
-  if(namesGreetedList[inputName.value] === undefined){
-    namesGreetedList[inputName.value] = 1;
-    greetingCounter.value++;
-    localStorage.setItem('greetCounter', greetingCounter.value);
-  }
-};
-
-/* create object to store names that have already been greeted */
+// create object to store names that have already been greeted
 var namesGreeted = {};
-console.log(greetingCounter);
-greetingCounter.value = localStorage.getItem('greetCounter');
-console.log(greetingCounter.value);
+
+//initialise counter
+if(!localStorage.getItem('greetCounter')){
+  localStorage.setItem('greetCounter', 0);
+};
+
 greetingCounter.innerHTML = localStorage.getItem('greetCounter');
-/* add event listener for a user submission */
+
+// add event listener for a user submission
 button.addEventListener("click", function(event){
-  var isChecked = isOneChecked();
   var outputLanguage = "";
-  /* only increment counter if user submits a valid string */
-  if(inputName.value !== "" && isChecked === true){
-    console.log("one is checked");
-    /* if name has been greeted before, do not increment counter */
-    incrementCounter(namesGreeted);
-    // if(namesGreeted[inputName.value] === undefined){
-    //   namesGreeted[inputName.value] = 1;
-    //   greetingCounter.value++;
-    //   localStorage.setItem('greetCounter', greetingCounter.value);
-    // };
-    // for(var i = 0; i < radioButtons.length; i++){
-    //   if(radioButtons[i].checked){
-    //     outputLanguage = radioButtons[i].value;
-    //   };
-    /* translate to appropriate language and display the greeting */
+
+  // only increment counter if user submits a valid string
+  if(inputName.value !== "" && chosenLanguage){
+    incrementCounter(namesGreeted, inputName.value);
+    // translate to appropriate language and display the greeting
     outputLanguage = chosenLanguage(radioButtons);
     outputName.innerHTML = assignLanguage(outputLanguage, inputName);
-    // switch (outputLanguage) {
-    //   case 'fr':
-    //     outputName.innerHTML = 'Bonjour, ' + inputName.value;
-    //     break;
-    //   case 'es':
-    //     outputName.innerHTML = 'Hola, ' + inputName.value;
-    //     break;
-    //   case 'en':
-    //     outputName.innerHTML = 'Hello, ' + inputName.value;
-    // };
-  // };
-  /* loop through radio buttons to see which button is checked */
   };
-  /* display current number of legitimate greetings */
+  // display current number of legitimate greetings
   greetingCounter.innerHTML = localStorage.getItem('greetCounter');
-  /* clear name from the input text field */
+  // clear name from the input text field
   inputName.value = "";
 });
-/* when greet reset button is clicked, reset the localStorage greet counter to 0 */
+
+// when greet reset button is clicked, reset the localStorage greet counter to 0
 greetReset.addEventListener("click", function(event){
   localStorage.setItem('greetCounter', 0);
   greetingCounter.value = localStorage.getItem('greetCounter');
-  /* display the 0, indicating reset success */
   greetingCounter.innerHTML = localStorage.getItem('greetCounter');
 });
-/* add event listener to hide and display hidden message */
-/* when moused over, display hidden message in h2 */
+
+// add event listener to hide and display hidden message
+// when moused over, display hidden message in h2
 mouseover.addEventListener("mouseover", function(event){
   event.target.innerHTML = "...it prints out your name!";
 });
+
 /* when not moused over, display public message */
 mouseover.addEventListener("mouseout", function(event){
   event.target.innerHTML = "...but its top secret...";
