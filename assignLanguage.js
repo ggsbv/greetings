@@ -10,13 +10,13 @@
 function assignLanguage(outputLanguage, name){
   switch (outputLanguage) {
     case 'fr':
-      return 'Bonjour, ' + name.value;
+      return 'Bonjour, ' + name;
       break;
     case 'es':
-      return 'Hola, ' + name.value;
+      return 'Hola, ' + name;
       break;
     case 'en':
-      return 'Hello, ' + name.value;
+      return 'Hello, ' + name;
       break;
   };
 };
