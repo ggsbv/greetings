@@ -15,7 +15,8 @@ function incrementCounter(namesGreetedList, name){
   if(!namesGreetedList[name]){
     namesGreetedList[name] = 1;
     let counter = Number(localStorage.getItem('greetCounter'));
-    counter++;
-    localStorage.setItem('greetCounter', counter);
+    let incrementedCounter = counter++;
+    localStorage.setItem('greetCounter', incrementedCounter);
+    return counter;
   };
 };
